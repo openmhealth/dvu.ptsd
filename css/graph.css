@@ -1,0 +1,118 @@
+h1{
+  margin-top: 0;
+  padding-top: 0;
+  font-size: 18px;
+}
+
+/*
+#vis_container{
+  position: relative;
+  margin-top: 10px;
+}
+*/
+
+svg{
+  background-color:#fff;
+}
+
+#binaryPlot{
+  position: relative;
+  width: 900px;
+  height: 222px;
+  top:-20px;
+}
+
+#binaryPlot.mainGraph{
+  height: 125px;
+}
+
+
+#mainPlot{
+  width: 900px;
+  height: 400px;
+}
+#mainPlot.mainGraph{
+  /*
+  border-radius:10px;
+  border: 1px #777 solid;
+  */
+}
+
+text.label{
+  font-size: 15px;
+  text-anchor:middle;
+}
+
+svg line,
+svg rect{
+  fill:none;
+  stroke:#ccc;
+  shape-rendering: crispEdges;
+}
+
+svg line{
+  clip-path: url(#clip);
+}
+
+svg text{
+  fill:#777;
+  font-size: 9px;
+}
+
+.plot{
+  clip-path: url(#clip);
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+svg #xTicks line,
+svg #yTicks line,
+svg rect{
+  fill:none;
+  stroke:#eee;
+  shape-rendering: crispEdges;
+}
+
+svg text{
+  fill:#777;
+  font-size: 9px;
+}
+
+.dot{
+  cursor:pointer;
+}
+
+.dot:hover{
+  fill:#111;
+}
+
+.line_plot path{
+  /*
+  clip-path: url(#clip);
+  */
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.dot{
+  r:4;
+  stroke:#fff;
+  stroke-width:2;
+}
+
+.overlay rect{
+  fill:#fff;
+  stroke:none;
+  opacity:.85;
+  stroke-width:1;
+}
+
+.overlay text{
+  fill:#000;
+  font-size: 11px;
+}
+
+
+#binaryPlot #xTicks text{
+  display:none;
+}

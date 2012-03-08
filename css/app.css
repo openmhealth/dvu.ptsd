@@ -1,0 +1,223 @@
+body{
+  font-size: 10pt;
+  font-family:sans-serif;
+}
+
+#wrapper{
+  position: relative;
+}
+
+#binary{
+  position: relative;
+  overflow: hidden;
+}
+
+
+#popup,
+#histogram{
+  position: fixed;
+  z-index:9999;
+  border-radius:10px;
+  background-color: #fff;
+  border: 2px solid #777;
+  top:80px;
+  left:150px;
+  min-width:600px;
+  height: auto;
+  padding:10px;
+}
+
+#popup .annotations label{
+  display: block;
+}
+
+#popup label{
+  font-weight: bold;
+}
+
+#popup .noteLabel{
+
+}
+#popup textarea{
+  width:600px;
+  height:160px;
+  border: none;
+  background-color:#f3f5bc;
+  padding: 5px;
+}
+
+.close{
+  position: absolute;
+  cursor: pointer;
+  top:10px;
+  right:10px;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+.ctrl_panel{
+  width: 825px;
+  padding-left: 50px;
+  clear: both;
+}
+
+#info_panel_wrapper,
+#binary_info_panel_wrapper{
+  position: absolute;
+  height: 400px;
+  width: 135px;
+  top: 25px;
+  right:0px;
+  /*
+  overflow: hidden;
+  */
+}
+#binary_info_panel_wrapper{
+  top:406px;
+}
+#info_panel,
+#binary_info_panel{
+  width: inherit;
+  max-height: 327px;
+  background-color:#fff;
+  overflow: auto;
+}
+#binary_info_panel{
+  max-height: 150px;
+}
+#info_panel .info,
+#binary_info_panel .info{
+  border-left-width: 3px; 
+  border-left-style: solid;
+  background-color: #eee;
+  font-size: 11px;
+  position: relative;
+  cursor: pointer;
+  padding:5px;
+  padding-right:3px;
+  /*
+  height: 100px;
+  border-radius:10px;
+  */
+  margin-bottom: 10px;
+}
+#info_panel .info .close,
+#binary_info_panel .info .close{
+  top:3px;
+  right:3px;
+}
+
+#defs{
+  display: none;
+}
+
+.times{
+}
+
+.times input{
+  background: url(../images/button_bkg.png);
+  border: 1px #aaa solid;
+  border-radius:3px; 
+  cursor: pointer;
+  text-align: center;
+  /*
+  color:blue;
+  font-size: 18px;
+  border:none;
+  */
+  width:80px;
+}
+
+#ui-datepicker-div{
+  background-color: white;
+  padding: 5px;
+  border:1px #111 solid;
+  border-radius:5px;
+  display: none;
+}
+
+#ui-datepicker-div a{
+  text-decoration: none;
+  color:#555;
+}
+
+#ui-datepicker-div a:hover{
+  color:#111;
+  text-decoration: underline;
+
+}
+
+.ui-datepicker-next{
+  float: right;
+}
+
+.ui-datepicker-title{
+  text-align: center;
+}
+
+#plotMenu{
+  width:300px;
+}
+
+#loginDialog{
+  /*
+    position:absolute;
+    top:80px;
+    left:50px;
+  */
+  background-color:white;
+  border: 1px black solid;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#loginDialog input{
+  display: block;
+}
+
+#loginDialog .msg{
+  font-weight: bold;
+}
+
+.ui-dialog-titlebar{
+  display: none;
+}
+
+#logoutButton{
+  cursor:pointer;    
+  float:right;
+}
+
+#pointOverlay{
+  border-radius: 10px;
+  border:1px #777 solid;
+  padding:10px;
+  background: #eee;
+  font-size: 11px;
+  position: fixed;
+  z-index: 1000;
+  top:200px;
+  left:400px;
+  width:300px;
+  height:auto;
+}
+
+#popup div ,
+#pointOverlay div {
+  position: relative; 
+  line-height: 1.5em;
+}
+#pointOverlay div label{
+  font-weight: bold;
+}
+
+#histoButton{
+  position: absolute;
+  bottom:10px;
+  left:10px;
+}
+
+.info .patient{
+  margin-top: 7px;
+  font-weight:bold;
+}
