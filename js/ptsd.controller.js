@@ -2,48 +2,49 @@ ptsd.controller = function(){
   var self = {}
   self.plots = []
   $(document).ready(function(){
+    
     //capture mouse location
     $(document).mousemove(function(e){
       ptsd.ui.mouse.x = e.pageX
       ptsd.ui.mouse.y = e.pageY
     }); 
+    
     //initialize plotters
-    //ptsd.mainPlot = omh.dvu.timeline('#mainPlot')
     ptsd.mainPlot =   ptsd.plot.main('#mainPlot')
     ptsd.binaryPlot = ptsd.plot.binary('#binaryPlot')
-    ptsd.startDate = new Date(2011, 11-1, 6);
-    ptsd.endDate = new Date(2011, 11-1, 22);
-    
-    //need to check login, but here we go
-    
+    //set dates
+    ptsd.startDate = new Date(2012, 3-1, 1);
+    ptsd.endDate = new Date(2012, 5-1, 31);
+    // enable date chooser
+    ptsd.ui.setupDateChoosers()
+   
+    //login
     $('#loginDialog').submit(self.signIn)
+    
     $('#logoutButton').click(ptsd.ohmage.logout)
+    
     $('.close').click(function(){
       $(this).parent().hide()
     })
-    
+  
+    $('#campaignMenu').change(self.campaignChanged)
+    $('#patientMenu').change(self.patientChanged)
+    $('#surveyMenu').change(ptsd.ui.populatePlotMenu)
+
     $('#histoButton').click(function(){
       $("#histogram").show()
     })
     
+    $('#annotationButton').click(self.annotate)
+    $('#plot').click(self.preparePlot)
+    
     if(!ptsd.ohmage.token())
       ptsd.ui.showLoginDialog()
-    else
-      ptsd.ohmage.loadData(function(){
-        if(ptsd.data.model == null){
-          ptsd.ui.showLoginDialog()
-          return
-        }
-        
-        ptsd.ui.populatePatientMenu()
-        ptsd.ui.populateSurveyMenu()
-        
-        $('#surveyMenu').change(ptsd.ui.populatePlotMenu)
-        $('#plot').click(self.plot)
-        
-        ptsd.ui.setupDateChoosers()
-      
+    else{
+      ptsd.ohmage.userInfo(function(campaign){
+        console.log('campaign',campaign)
       })
+    }
   })
   
   self.signIn = function(){
@@ -64,12 +65,67 @@ ptsd.controller = function(){
     return false
   }
   
-  self.plot = function(){
-    console.log('trying to plot',
-      $('#patientMenu').val(),
+  self.campaignChanged = function(){
+    console.log('campaignChanged')
+    ptsd.ohmage.campaign = $('#campaignMenu').val()
+    ptsd.ohmage.loadPatients()
+  }
+  
+  self.patientChanged = function(){
+    var patient = $('#patientMenu').val()
+    //var surveyKey = self.getSurveyId() 
+    console.log('ptsd.ohmage.surveyId',ptsd.ohmage.surveyId)
+    $('.dot.annotation,#infoProto.annotation').remove()
+  /*
+    if(ptsd.ohmage.surveyKey){
+      ptsd.ohmage.getAnnotations(function(res){
+        ptsd.data.filters.anotation(res)
+        console.log('ptsd.data.model[elm.val()]["Annotation"]', ptsd.data.model[patient]["Annotation"])
+        ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
+        ptsd.ui.annotationInfoPanel()
+      })
+    }
+    */
+  }
+  
+  self.annotate = function(){
+    var annotation = $('#popup .annotations textarea').val()
+    var timestamp = $('#popup .timestamp span').text()
+    timestamp = new Date(timestamp).getTime()
+    console.log("annotation : "+annotation+", timestamp"+timestamp)
+    ptsd.ohmage.annotate(annotation, timestamp,function(){
+      $('#annotationMsg').show()
+    })
+  }
+  
+  self.checkData = function(){
+    
+  }
+  
+  self.preparePlot = function(){
+    var patient = $('#patientMenu').val()
+    console.log('Preparing plot:',
+      patient,
       $('#surveyMenu').val(),
       $('#plotMenu').val()
       )
+    var data = ptsd.data.model[patient]
+    if(!data){
+      ptsd.ohmage.loadData(patient,function(){
+        self.plot()
+        ptsd.ohmage.getAnnotations(function(res){
+          ptsd.data.filters.anotation(res)
+          ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
+          ptsd.ui.annotationInfoPanel()
+        })
+      })
+    } else{
+      self.plot()
+    }
+  
+  }
+  
+  self.plot = function(){
     var data = ptsd.data.model[$('#patientMenu').val()]
     data = data[$('#surveyMenu').val()]
     var plotVal = $('#plotMenu').val()
@@ -79,11 +135,21 @@ ptsd.controller = function(){
         if(el.attr('name'))
           plotVal = el.attr('name')
     })
-    
+    if(!data){
+      alert("No Data Available")
+      return
+    }
     data = data[plotVal]
+    if(!data){
+      alert("No Data Available")
+      return
+    }
     var datum = data[0]
-    if(!datum)
+    if(!datum){
+      alert("No Data Available")
       return;
+    }
+    
     var id = ptsd.ui.infoPanel(datum)
     if(datum.max == 1){
       var plot = ptsd.binaryPlot.plot(data)
@@ -140,9 +206,7 @@ ptsd.controller = function(){
       }
     })
   }
-  
   self.saveAnnotation = function(){
-  
   }
   
   return self;

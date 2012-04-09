@@ -3,8 +3,19 @@ ptsd.plot.main = function(vis_container){
   //create what will become the return value of omh.dvu.timeline() 
   var self = $.extend({},omh.dvu.timeline(vis_container))
   
+  self.width = function(){
+    return 825;
+  }
+  self.height = function(){
+    return 325;      
+  }
+  
   self.plot = function(data){
-    
+  
+    if(!data || data.length < 1){
+      alert("No Data Available")
+    }
+
     data.sort(function(a, b){
       return a.time - b.time
     })
@@ -72,7 +83,7 @@ ptsd.plot.main = function(vis_container){
         ptsd.ui.hidePointOverlay()
       }).on("mousedown", function() {
         var datum = JSON.parse(d3.select(this).attr('data'))
-        ptsd.ui.popup(datum)()
+        ptsd.ui.popup(datum)
       })
     })
     return plots

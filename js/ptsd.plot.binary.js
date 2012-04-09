@@ -5,6 +5,11 @@ ptsd.plot.binary = function(vis_container){
   
   self.plot = function(data){
     
+    if(!data || data.length < 1){
+      alert("No Data Available")
+      return
+    }
+    
     data.sort(function(a, b){
       return a.time - b.time
     })
@@ -43,6 +48,48 @@ ptsd.plot.binary = function(vis_container){
       }).on("mousedown", function() {
         var datum = JSON.parse(d3.select(this).attr('data'))
         ptsd.ui.popup(datum)
+      })
+    })
+    return scatter
+  }
+  
+  self.plotAnnotations = function(data){
+    
+    data.sort(function(a, b){
+      return a.time - b.time
+    })
+
+    var y = 2
+    
+    var x = d3.time.scale()
+    .domain([ptsd.startDate, ptsd.endDate]).range([0,self.width()]) 
+      
+    var scatter = self.vis.data([data])
+    .append('g')
+    .attr('transform','translate(50,25)')
+    .attr('class','plot')
+    .style('clip-path','url('+self.container+'_pathClip)')
+    
+    $.each(data, function(){
+      scatter.append("rect")
+      .style("fill", 'yellow')
+      .style("stroke", 'black')
+      .style("stroke-width", 1)
+      .attr("data", JSON.stringify(this))
+      .attr("class", "dot annotation")
+      .attr("x", x(this.x))
+      .attr("y",  2)
+      .attr("width", 10)
+      .attr("height", 10)
+      .on("mouseover", function() {
+        var datum = JSON.parse(d3.select(this).attr('data'))
+        console.log("annotation","mouseover",datum)
+        ptsd.ui.pointOverlay(datum)
+      }).on("mouseout", function() {
+        ptsd.ui.hidePointOverlay()
+      }).on("mousedown", function() {
+        var datum = JSON.parse(d3.select(this).attr('data'))
+        ptsd.ui.annotationPopup(datum)
       })
     })
     return scatter
