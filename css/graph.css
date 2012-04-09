@@ -22,8 +22,9 @@ svg{
   top:-20px;
 }
 
-#binaryPlot.mainGraph{
-  height: 125px;
+#binaryPlot .mainGraph{
+  width: 900px;
+  height: 222px;
 }
 
 
@@ -31,7 +32,10 @@ svg{
   width: 900px;
   height: 400px;
 }
-#mainPlot.mainGraph{
+
+#mainPlot .mainGraph{
+  width: 900px;
+  height: 400px;
   /*
   border-radius:10px;
   border: 1px #777 solid;

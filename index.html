@@ -15,6 +15,7 @@ and open the template in the editor.
     <script type="text/javascript" src="js/lib/d3/d3.js"></script>
     <script type="text/javascript" src="js/lib/d3/d3.time.js"></script>
     <script type="text/javascript" src="js/lib/color.converter.js"></script>
+    <script type="text/javascript" src="js/lib/date.js"></script>
     <!-- OMH Scripts -->
     <script type="text/javascript" src="js/omh.js"></script>
     <script type="text/javascript" src="js/omh.dvu.js"></script>
@@ -31,13 +32,19 @@ and open the template in the editor.
   <body style="width: 1020px; padding: 0px;">
     <div class="ctrl_panel">
       <span id="logoutButton">sign out</span>
-      <h1>ClinVis: PTSD Explorer</h1>
+      <h1>
+        ClinVis: PTSD Explorer<span id='msg'></span>
+      </h1>
       <div class="form">
+        <label>Campaign: </label>
+        <select id="campaignMenu"></select>
         <label>Patient: </label>
         <select id="patientMenu"></select>
-        <label style="padding-left: 20px;">Survey Type: </label>
+        <br/>
+        <label style="padding-left: 0px;">Survey Type: </label>
         <select id="surveyMenu"></select><select id="plotMenu"></select>
         <input id="plot" type="submit" value="Plot">
+        <img class="waiting" style="display: none" src="images/waiting.gif"/>
       </div>
     </div>
     <div id="wrapper">
@@ -53,9 +60,9 @@ and open the template in the editor.
 
   <center class="times">
     Dates: 
-    <input type="text" id="startDate" name="startDate" value="11/6/2011" /> 
+    <input type="text" id="startDate" name="startDate" value="3/1/2012" /> 
     to:
-    <input type="text" id="endDate" name="endDate" value="11/22/2011" />   
+    <input type="text" id="endDate" name="endDate" value="5/31/2012" />   
   </center>
 
   <form id="loginDialog" style="display: none">
@@ -73,9 +80,10 @@ and open the template in the editor.
     <div class="survey"><label>Survey: </label><span></span></div>
     <div class="question"><label>Question: </label><span></span></div>
     <div class="response"><label>Response: </label><span></span></div>
+    <div class="annotation"><label>Annotation: </label><span></span></div>
   </div>
 
-  <div id="popup" style="display: none">
+  <div id="popup" style="display: none" class="popup">
     <div class="patient"><label>Patient: </label><span></span></div>
     <div class="timestamp"><label>Date/Time: </label><span></span></div>
     <div class="survey"><label>Survey: </label><span></span></div>
@@ -88,6 +96,25 @@ and open the template in the editor.
     <div class="annotations">
       <label class="noteLabel">Annotations:</label>
       <textarea></textarea>
+      <div>
+        <button id="annotationButton">Save Annotation</button>
+        <span id="annotationMsg" style="display: none">Annotation Saved</span>
+      </div>
+    </div>
+    <span class="close">X</span>
+  </div>
+
+  <div id="annotationPopup" class="popup" style="display: none">
+    <div class="patient"><label>Patient: </label><span></span></div>
+    <div class="timestamp"><label>Date/Time: </label><span></span></div>
+    <br/>
+    <div class="annotations">
+      <label class="noteLabel">Annotations:</label>
+      <textarea></textarea>
+      <div>
+        <button id="annotationButton">Save Annotation</button>
+        <span id="annotationMsg" style="display: none">Annotation Saved</span>
+      </div>
     </div>
     <span class="close">X</span>
   </div>
