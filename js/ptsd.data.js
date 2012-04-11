@@ -34,7 +34,8 @@ ptsd.data.filters = {}
 
 //here we filter the data into a data model
 ptsd.data.filters.meta = function(data){
-  console.log('rawData',data)
+  window.rawData = data
+  console.log('rawData',window.rawData)
   if(data.result == 'failure'){
     ptsd.data.model = null
     return 
@@ -43,7 +44,8 @@ ptsd.data.filters.meta = function(data){
   }
   $.each(data,function(){
     $.each(this,function(){
-      // ptsd.data.filters['patient'](this)      
+      //ptsd.data.filters['patient'](this)   
+      ptsd.data.filters.toolParticipation(this)
       var surveyId = this['survey_id']
       if(surveyId){
         if(ptsd.data.filters[surveyId])
@@ -54,14 +56,60 @@ ptsd.data.filters.meta = function(data){
   console.log('ptsd.data.model',ptsd.data.model)
 }
 
+//filter annotations
+ptsd.data.filters.toolParticipation = function(data){
+  if(data.survey_description){
+    //    console.log('toolParticipation ',data)
+    var datum = {}
+    datum['timestamp'] = data['timestamp']
+    datum['x'] = new Date( Date.parse(datum['timestamp'].replace(/-/g, " ")))
+    datum['time'] = datum['x'].getTime()
+    datum['patient'] = data['user']
+    datum['responseText'] = data['survey_description']
+    //datum.response = data.survey_title
+    datum.min = 0
+    datum.max = 1
+    datum.y = 90
+    datum.survey = "Tool Participation"
+    datum.color = "green"
+    var model = ptsd.data.getModel(datum.patient, 'Tool Participation', 'All')
+    model.push(datum)
+  }
+}
+
+//filter annotations
+ptsd.data.filters.anotation = function(res){
+  var model = []
+  res = JSON.parse(res)
+  $.each(res.data, function(){
+    console.log('annotation',this)
+    var datum = {}
+    datum.text = this.text
+    //  datum.y = 5
+    datum.time = this.time
+    datum.timestamp = new Date(this.time)
+    datum.x = new Date(this.time)
+    datum.timezone = this.timezone
+    model.push(datum)
+  })
+  ptsd.data.model[$('#patientMenu').val()]['Annotation'] = model
+}
+
 ptsd.data.extend = function(parent, input){
   var o = {}
   o['surveyKey'] = parent['survey_key']
   o['patient'] = parent['user']
-  o['timestamp'] = parent['timestamp']
   o['timezone'] = parent['timezone']
-  o['x'] = new Date(o['timestamp'])
+  
+  o['timestamp'] = parent['timestamp']
+  //console.log('timestamp', o['timestamp'])
+  
+  o['x'] = new Date( Date.parse(o['timestamp'].replace(/-/g, " ")))
+  //console.log('x', o['x'])
   o['time'] = o['x'].getTime()
+  //console.log('time', o['time'])
+  o['time'] = o['x'].getTime()
+  
   o['index'] = input['prompt_index']
   o['choices'] = input['prompt_choice_glossary']
   o['question'] = input['prompt_text']
@@ -76,13 +124,18 @@ ptsd.data.extend = function(parent, input){
     o['responseText'] = o['choices'][input['prompt_response']].label
   }
   /*
-  $.each(o, function(k,v){
-    if(!v){
-      delete o[k]
-    }
-  })
+  var datum = $.extend({},o)
+  if(datum.y > 0){
+    var model = ptsd.data.getModel(datum.patient, 'Tool Participation', 'All')
+    datum.question = null
+    datum.response = "User Responded"
+    datum.min = 0
+    datum.max = 1
+    datum.y = 90
+    datum.color = "green"
+    model.push(datum)
+  }
   */
-  
   return o
 }
 
@@ -159,7 +212,7 @@ ptsd.data.filters['dailyAssessment'] = function(input){
     if (datum.response == 'NOT_DISPLAYED')return
     datum.min = 0
     datum.max = 1
-    datum.y = 5
+    datum.y = 25
     datum.color = '#F461A6';
     model.push(datum)
   }
@@ -180,7 +233,7 @@ ptsd.data.filters['dailyAssessment'] = function(input){
     datum.max = 1
     datum.color = '#61F0F4';
     if(datum.response.length > 0){
-      datum.y = 20
+      datum.y = 40
       model.push(datum)
     }
   }
@@ -201,7 +254,7 @@ ptsd.data.filters['dailyAssessment'] = function(input){
     datum.survey = 'Coping and Substance Use';
     datum.min = 0
     datum.max = 1
-    datum.y = 35
+    datum.y = 55
     datum.color = '#80337E';
     model.push(datum)
   }
@@ -221,7 +274,7 @@ ptsd.data.filters['dailyAssessment'] = function(input){
     datum.survey = 'Coping and Substance Use';
     datum.min = 0
     datum.max = 1
-    datum.y = 50
+    datum.y = 70
     datum.color = '#F461F0';
     model.push(datum)
   }
@@ -241,7 +294,7 @@ ptsd.data.filters['dailyAssessment'] = function(input){
     datum.survey = 'Medications';
     datum.min = 0
     datum.max = 1
-    datum.y = 65
+    datum.y = 85
     datum.color = 'pink';
     model.push(datum)
   }
@@ -328,11 +381,18 @@ ptsd.data.phqClrs['phq98'] = '#7C58B9'
 ptsd.data.phqClrs['phq99'] = '#B958B6'
 
 ptsd.data.filters['phq9Survey'] = function(input){
+  console.log('phq9Survey',input)
   var raw
   var sum = 0;
+  var alert = false
+  if(input['responses']['phq99']['prompt_response'].toString() === '3') alert = true
+  console.log('phq9Survey,responses',input['responses']['phq99']['prompt_response'],'alert',alert)
   $.each(input['responses'],function(k,v){
     raw = this
     datum = ptsd.data.extend(input,this)
+    datum.alert = function(){
+      return alert 
+    }
     datum.min = 0
     datum.max = 3
     datum.y = datum.response
@@ -349,12 +409,43 @@ ptsd.data.filters['phq9Survey'] = function(input){
   datum.max = 27
   datum.sum = sum
   datum.alert = function(){
-    return datum.y > 10
+    return alert || datum.y > 10
   }
   datum.color = "#808080"
   datum.y = sum
   datum.survey = 'Depression'
   ptsd.data.getModel(datum.patient, 'Depression', 'All').push(datum)
+}
+
+ptsd.data.filters['preExerciseSudsProbe'] = function(input){
+  console.log('preExerciseSudsProbe',input)
+  var datum = ptsd.data.extend(input,input)
+  var model = ptsd.data.getModel(datum.patient, 'SUDs Ratings', 'Pre Exercise Ratings')
+  
+  datum.question = "Pre SUDs Score"
+  datum.survey = 'SUDs';
+  datum.min = 0
+  datum.max = 10
+  datum.color = '#D3BB7f';
+  datum.response = input.responses.preExerciseSudsScore.prompt_response
+  datum.y = datum.response
+  model.push(datum)
+}
+
+ptsd.data.filters['postExerciseSudsProbe'] = function(input){
+  console.log('postExerciseSudsProbe',input)
+  var datum = ptsd.data.extend(input,input)
+  var model = ptsd.data.getModel(datum.patient, 'SUDs Ratings', 'Post Exercise Ratings')
+  
+  datum.question = "Post SUDs Score"
+  datum.survey = 'SUDs';
+  datum.min = 0
+  datum.max = 10
+  datum.color = '#987f40';
+  datum.response = input.responses.postExerciseSudsScore.prompt_response
+  datum.y = datum.response
+  model.push(datum)
+
 }
 
 //Utility functions

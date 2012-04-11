@@ -12,8 +12,7 @@ body{
   overflow: hidden;
 }
 
-
-#popup,
+.popup,
 #histogram{
   position: fixed;
   z-index:9999;
@@ -27,18 +26,18 @@ body{
   padding:10px;
 }
 
-#popup .annotations label{
+.popup .annotations label{
   display: block;
 }
 
-#popup label{
+.popup label{
   font-weight: bold;
 }
 
-#popup .noteLabel{
+.popup .noteLabel{
 
 }
-#popup textarea{
+.popup textarea{
   width:600px;
   height:160px;
   border: none;
@@ -56,9 +55,15 @@ body{
 }
 
 .ctrl_panel{
+  position: relative;
   width: 825px;
   padding-left: 50px;
   clear: both;
+}
+
+.waiting{
+  position: relative;
+  top: 5px;
 }
 
 #info_panel_wrapper,
@@ -156,7 +161,7 @@ body{
 }
 
 #plotMenu{
-  width:300px;
+  width:250px;
 }
 
 #loginDialog{
@@ -202,7 +207,7 @@ body{
   height:auto;
 }
 
-#popup div ,
+.popup div ,
 #pointOverlay div {
   position: relative; 
   line-height: 1.5em;
@@ -220,4 +225,18 @@ body{
 .info .patient{
   margin-top: 7px;
   font-weight:bold;
+}
+
+#annotationMsg{
+  color:red;
+}
+
+.info.annotation .patient,
+.info.annotation .close{
+  display: none;
+}
+
+#msg{
+  font-size: 11px;
+  color:red;
 }
