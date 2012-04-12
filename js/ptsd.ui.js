@@ -199,6 +199,8 @@ ptsd.ui.popup = function(data){
   ptsd.ui.hidePointOverlay()
   var el = $('#popup')
   ptsd.ui.populateOverlay(el,data)
+  el.find('#annotationMsg').text('')
+  el.find('.annotations textarea').val('')
   el.show()
 }
 
@@ -239,6 +241,7 @@ ptsd.ui.annotationPopup = function(data){
       $('#annotationPopup .annotations textarea').val(data.text)
     }
   })
+  $('#annotationPopup ').hide()
   $('#annotationPopup').show()
 }
 

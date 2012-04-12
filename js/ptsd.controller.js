@@ -55,7 +55,7 @@ ptsd.controller = function(){
       },
       failure:function(){
         $('#loginDialog .msg').css('color','red').
-        text('Incorrect user name or password. Please try again.')
+          text('Incorrect user name or password. Please try again.')
       }
     })
     return false
@@ -81,6 +81,13 @@ ptsd.controller = function(){
       ptsd.ohmage.getAnnotations(function(res){
         ptsd.data.filters.anotation(res)
         ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
+        var data = ptsd.data.model[patient]["Annotation"]
+        var plot = ptsd.binaryPlot.plotAnnotations(data)
+        ptsd.controller.plots.push({
+          type:'scatter',
+          plot:plot,
+          data:data
+        })
         ptsd.ui.annotationInfoPanel()
         $('#annotationMsg').show()
       })
@@ -99,8 +106,6 @@ ptsd.controller = function(){
         self.plot()
         ptsd.ohmage.getAnnotations(function(res){
           ptsd.data.filters.anotation(res)
-          //ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
-          //---
           var data = ptsd.data.model[patient]["Annotation"]
           var plot = ptsd.binaryPlot.plotAnnotations(data)
           ptsd.controller.plots.push({
@@ -108,7 +113,6 @@ ptsd.controller = function(){
             plot:plot,
             data:data
           })          
-          //---
           ptsd.ui.annotationInfoPanel()
         })
       })
@@ -182,15 +186,15 @@ ptsd.controller = function(){
     $.each(ptsd.controller.plots,function(){
       var y = d3.scale.linear()
       .domain([this.data[0].min, this.data[0].max]).
-      range([ptsd.mainPlot.height(), 0])
+        range([ptsd.mainPlot.height(), 0])
       if(this.type =='path'){
         this.plot.select('path')
         .attr("d", d3.svg.line()
-          .x(function(d) {
-            return x(d.x)
-          }).y(function(d) {
-            return y(d.y)
-          }))
+        .x(function(d) {
+          return x(d.x)
+        }).y(function(d) {
+          return y(d.y)
+        }))
       }else if(this.type == 'scatter'){
         var i = 0
         this.plot.selectAll('circle').each(function(data){
