@@ -2,7 +2,6 @@ ptsd.controller = function(){
   var self = {}
   self.plots = []
   $(document).ready(function(){
-    
     //capture mouse location
     $(document).mousemove(function(e){
       ptsd.ui.mouse.x = e.pageX
@@ -55,7 +54,7 @@ ptsd.controller = function(){
       },
       failure:function(){
         $('#loginDialog .msg').css('color','red').
-          text('Incorrect user name or password. Please try again.')
+        text('Incorrect user name or password. Please try again.')
       }
     })
     return false
@@ -76,7 +75,9 @@ ptsd.controller = function(){
     var patient = $('#patientMenu').val()
     var annotation = $('#popup .annotations textarea').val()
     var timestamp = $('#popup .timestamp span').text()
+    timestamp = timestamp.replace(/-/g,"/")
     timestamp = new Date(timestamp).getTime()
+    console.log('self.annotate','annotation',annotation,'timestamp',timestamp)
     ptsd.ohmage.annotate(annotation, timestamp,function(){
       ptsd.ohmage.getAnnotations(function(res){
         ptsd.data.filters.anotation(res)
@@ -186,15 +187,15 @@ ptsd.controller = function(){
     $.each(ptsd.controller.plots,function(){
       var y = d3.scale.linear()
       .domain([this.data[0].min, this.data[0].max]).
-        range([ptsd.mainPlot.height(), 0])
+      range([ptsd.mainPlot.height(), 0])
       if(this.type =='path'){
         this.plot.select('path')
         .attr("d", d3.svg.line()
-        .x(function(d) {
-          return x(d.x)
-        }).y(function(d) {
-          return y(d.y)
-        }))
+          .x(function(d) {
+            return x(d.x)
+          }).y(function(d) {
+            return y(d.y)
+          }))
       }else if(this.type == 'scatter'){
         var i = 0
         this.plot.selectAll('circle').each(function(data){
