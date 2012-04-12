@@ -80,7 +80,13 @@ ptsd.controller = function(){
     ptsd.ohmage.annotate(annotation, timestamp,function(){
       ptsd.ohmage.getAnnotations(function(res){
         ptsd.data.filters.anotation(res)
-        ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
+        var data = ptsd.data.model[patient]["Annotation"]
+        var plot = ptsd.binaryPlot.plotAnnotations(data)
+        ptsd.controller.plots.push({
+          type:'scatter',
+          plot:plot,
+          data:data
+        })
         ptsd.ui.annotationInfoPanel()
         $('#annotationMsg').show()
       })
@@ -99,8 +105,6 @@ ptsd.controller = function(){
         self.plot()
         ptsd.ohmage.getAnnotations(function(res){
           ptsd.data.filters.anotation(res)
-          //ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
-          //---
           var data = ptsd.data.model[patient]["Annotation"]
           var plot = ptsd.binaryPlot.plotAnnotations(data)
           ptsd.controller.plots.push({
