@@ -41,9 +41,7 @@ ptsd.controller = function(){
     if(!ptsd.ohmage.token())
       ptsd.ui.showLoginDialog()
     else{
-      ptsd.ohmage.userInfo(function(campaign){
-        console.log('campaign',campaign)
-      })
+      ptsd.ohmage.userInfo()
     }
   })
   
@@ -53,11 +51,9 @@ ptsd.controller = function(){
     var password = $('#loginDialog #password').val()
     ptsd.ohmage.login(user,password,{
       success:function(){
-        console.log('success called')
         window.location.reload()
       },
       failure:function(){
-        console.log('failure called')
         $('#loginDialog .msg').css('color','red').
         text('Incorrect user name or password. Please try again.')
       }
@@ -66,7 +62,6 @@ ptsd.controller = function(){
   }
   
   self.campaignChanged = function(){
-    console.log('campaignChanged')
     ptsd.ohmage.campaign = $('#campaignMenu').val()
     ptsd.ohmage.loadPatients()
   }
@@ -74,27 +69,21 @@ ptsd.controller = function(){
   self.patientChanged = function(){
     var patient = $('#patientMenu').val()
     //var surveyKey = self.getSurveyId() 
-    console.log('ptsd.ohmage.surveyId',ptsd.ohmage.surveyId)
     $('.dot.annotation,#infoProto.annotation').remove()
-  /*
-    if(ptsd.ohmage.surveyKey){
-      ptsd.ohmage.getAnnotations(function(res){
-        ptsd.data.filters.anotation(res)
-        console.log('ptsd.data.model[elm.val()]["Annotation"]', ptsd.data.model[patient]["Annotation"])
-        ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
-        ptsd.ui.annotationInfoPanel()
-      })
-    }
-    */
   }
   
   self.annotate = function(){
+    var patient = $('#patientMenu').val()
     var annotation = $('#popup .annotations textarea').val()
     var timestamp = $('#popup .timestamp span').text()
     timestamp = new Date(timestamp).getTime()
-    console.log("annotation : "+annotation+", timestamp"+timestamp)
     ptsd.ohmage.annotate(annotation, timestamp,function(){
-      $('#annotationMsg').show()
+      ptsd.ohmage.getAnnotations(function(res){
+        ptsd.data.filters.anotation(res)
+        ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
+        ptsd.ui.annotationInfoPanel()
+        $('#annotationMsg').show()
+      })
     })
   }
   
@@ -104,18 +93,22 @@ ptsd.controller = function(){
   
   self.preparePlot = function(){
     var patient = $('#patientMenu').val()
-    console.log('Preparing plot:',
-      patient,
-      $('#surveyMenu').val(),
-      $('#plotMenu').val()
-      )
     var data = ptsd.data.model[patient]
     if(!data){
       ptsd.ohmage.loadData(patient,function(){
         self.plot()
         ptsd.ohmage.getAnnotations(function(res){
           ptsd.data.filters.anotation(res)
-          ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
+          //ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
+          //---
+          var data = ptsd.data.model[patient]["Annotation"]
+          var plot = ptsd.binaryPlot.plotAnnotations(data)
+          ptsd.controller.plots.push({
+            type:'scatter',
+            plot:plot,
+            data:data
+          })          
+          //---
           ptsd.ui.annotationInfoPanel()
         })
       })
@@ -180,6 +173,7 @@ ptsd.controller = function(){
   self.scaleTime = function(){
     ptsd.mainPlot.xRange(ptsd.startDate, ptsd.endDate)
     ptsd.binaryPlot.xRange(ptsd.startDate, ptsd.endDate)
+    //ptsd.binaryPlot.plotAnnotations(ptsd.data.model[patient]["Annotation"])
     
     var x = d3.time.scale()
     .domain([ptsd.startDate, ptsd.endDate])
@@ -197,10 +191,15 @@ ptsd.controller = function(){
           }).y(function(d) {
             return y(d.y)
           }))
-      }else if(this.type =='scatter'){
+      }else if(this.type == 'scatter'){
         var i = 0
         this.plot.selectAll('circle').each(function(data){
           $(this).attr('cx',x(data[i].x))
+          i++
+        })
+        i = 0
+        this.plot.selectAll('rect').each(function(data){
+          $(this).attr('x',x(data[i].x))
           i++
         })
       }

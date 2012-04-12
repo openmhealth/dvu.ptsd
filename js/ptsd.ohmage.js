@@ -93,7 +93,6 @@ ptsd.ohmage.loadPatients = function(){
     success: function(res) {
       ptsd.ui.msg('')
       res = JSON.parse(res)
-      console.log('ptsd.ohmage.loadPatients',res)
       var patients = []
       $.each(res.data,function(){
         if($.inArray(this['user'], patients) == -1){
@@ -140,7 +139,6 @@ ptsd.ohmage.loadData = function(patient, callback){
         return
       }
       ptsd.ohmage.surveyKey = data.data[0].survey_key
-      console.log('ptsd.ohmage.surveyKey',ptsd.ohmage.surveyKey)
       ptsd.data.filters.meta(data)
       if(callback)
         callback()
@@ -165,7 +163,6 @@ ptsd.ohmage.annotate = function(annotation, timestamp, callback){
 }
 
 ptsd.ohmage.getAnnotations = function(callback){
-  console.log('ptsd.ohmage.getAnnotations',ptsd.ohmage.surveyKey)
   var url = ptsd.ohmage.url +'/annotation/survey_response/read'
   var params = {
     auth_token:ptsd.ohmage.token(),
@@ -179,19 +176,3 @@ ptsd.ohmage.getAnnotations = function(callback){
   }
     
 }
-
-/*
-ptsd.ohmage.getAnnotations = function(surveyKey, callback){
-  console.log('ptsd.ohmage.getAnnotations',surveyKey)
-  var url = ptsd.ohmage.url +'/annotation/survey_response/read'
-  var params = {
-    auth_token:ptsd.ohmage.token(),
-    client:ptsd.ohmage.client,
-    survey_id : ptsd.ohmage.surveyId
-  }
-  
-  $.post(url, params, function(res){
-    callback(res)
-  })
-}
- */

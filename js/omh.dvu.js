@@ -13,7 +13,6 @@ omh.dvu = function(vis_container){
   var self = $.extend({},omh())
   self.container = vis_container
   self.id = $(self.container).attr('id')
-  console.log('self.container',self.container)
   self.vis = d3.select(vis_container)
   .append('svg:svg').attr('class','mainGraph')
   
@@ -230,7 +229,6 @@ omh.dvu = function(vis_container){
     .attr('stroke', self.plot_clr)
     .attr('stroke-width', self.stroke_wid)
     .attr('fill', 'none')
-    console.log('this.x_inc',dvu.x_inc)
     var d = "M"+(xA[0]*self.x_inc)+" "+(yA[0]*dvu.y_inc)
     self.range(0,len).each(function(i){
       d += "L"+(xA[i]*dvu.x_inc)+" "+(yA[i]*dvu.y_inc)
@@ -278,7 +276,5 @@ omh.dvu = function(vis_container){
     .attr('class','label')
     .text(label)
   }.defaults('Y AXIS')
-
-  console.log('omh.dvu',self)
   return self
 }

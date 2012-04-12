@@ -59,6 +59,8 @@ ptsd.plot.binary = function(vis_container){
       return a.time - b.time
     })
 
+    self.xRange(ptsd.startDate, ptsd.endDate)
+
     var y = 2
     
     var x = d3.time.scale()
@@ -83,7 +85,6 @@ ptsd.plot.binary = function(vis_container){
       .attr("height", 10)
       .on("mouseover", function() {
         var datum = JSON.parse(d3.select(this).attr('data'))
-        console.log("annotation","mouseover",datum)
         ptsd.ui.pointOverlay(datum)
       }).on("mouseout", function() {
         ptsd.ui.hidePointOverlay()

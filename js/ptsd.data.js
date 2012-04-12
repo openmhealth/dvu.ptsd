@@ -59,7 +59,6 @@ ptsd.data.filters.meta = function(data){
 //filter annotations
 ptsd.data.filters.toolParticipation = function(data){
   if(data.survey_description){
-    //    console.log('toolParticipation ',data)
     var datum = {}
     datum['timestamp'] = data['timestamp']
     datum['x'] = new Date( Date.parse(datum['timestamp'].replace(/-/g, " ")))
@@ -82,7 +81,6 @@ ptsd.data.filters.anotation = function(res){
   var model = []
   res = JSON.parse(res)
   $.each(res.data, function(){
-    console.log('annotation',this)
     var datum = {}
     datum.text = this.text
     //  datum.y = 5
@@ -102,12 +100,9 @@ ptsd.data.extend = function(parent, input){
   o['timezone'] = parent['timezone']
   
   o['timestamp'] = parent['timestamp']
-  //console.log('timestamp', o['timestamp'])
   
   o['x'] = new Date( Date.parse(o['timestamp'].replace(/-/g, " ")))
-  //console.log('x', o['x'])
   o['time'] = o['x'].getTime()
-  //console.log('time', o['time'])
   o['time'] = o['x'].getTime()
   
   o['index'] = input['prompt_index']
@@ -381,12 +376,10 @@ ptsd.data.phqClrs['phq98'] = '#7C58B9'
 ptsd.data.phqClrs['phq99'] = '#B958B6'
 
 ptsd.data.filters['phq9Survey'] = function(input){
-  console.log('phq9Survey',input)
   var raw
   var sum = 0;
   var alert = false
   if(input['responses']['phq99']['prompt_response'].toString() === '3') alert = true
-  console.log('phq9Survey,responses',input['responses']['phq99']['prompt_response'],'alert',alert)
   $.each(input['responses'],function(k,v){
     raw = this
     datum = ptsd.data.extend(input,this)
@@ -418,7 +411,6 @@ ptsd.data.filters['phq9Survey'] = function(input){
 }
 
 ptsd.data.filters['preExerciseSudsProbe'] = function(input){
-  console.log('preExerciseSudsProbe',input)
   var datum = ptsd.data.extend(input,input)
   var model = ptsd.data.getModel(datum.patient, 'SUDs Ratings', 'Pre Exercise Ratings')
   
@@ -433,7 +425,6 @@ ptsd.data.filters['preExerciseSudsProbe'] = function(input){
 }
 
 ptsd.data.filters['postExerciseSudsProbe'] = function(input){
-  console.log('postExerciseSudsProbe',input)
   var datum = ptsd.data.extend(input,input)
   var model = ptsd.data.getModel(datum.patient, 'SUDs Ratings', 'Post Exercise Ratings')
   

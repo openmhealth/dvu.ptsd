@@ -82,10 +82,14 @@ ptsd.ui.msg = function(text){
 ptsd.ui.showLoginDialog = function(){
   $('#logoutButton').hide()
   $('body,svg').css('background','#ddd')
+  $('input, select')
+  .not('#username,#password,#loginButton')
+  .attr('disabled','true')
   $('#loginDialog').dialog()
 }
 ptsd.ui.hideLoginDialog = function(){
   $('#logoutButton').show()
+  $('input, select').removeAttr('disabled')
   $('body,svg').css('background','#fff')
   $('#loginDialog').hide()
 }
@@ -178,18 +182,6 @@ ptsd.ui.populateOverlay = function(el,data){
   }else{
     el.find('.response span').text(data.responseText)
   }
-
-  var annotations = ptsd.data.model[$('#patientMenu').val()]['Annotation']
-/*
-$.each(annotations, function(){
-    if(data.time === this.time){
-      console.log('we got a time match')
-      el.find('.annotations textarea').val(this.text)
-    }else{
-      console.log(data.time,'no match',this.time)
-    }
-  })
-  */
 }
   
 ptsd.ui.pointOverlay = function(data){
