@@ -6,7 +6,6 @@ if(typeof ptsd == 'undefined'){
 }
 
 ptsd.data = {}
-
 ptsd.data.model = {}
 
 ptsd.data.getModel = function(patient, name, sub){

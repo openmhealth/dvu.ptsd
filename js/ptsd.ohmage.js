@@ -47,8 +47,21 @@ ptsd.ohmage.login = function(user, password, callbacks){
 }
 
 ptsd.ohmage.logout = function(){
-  localStorage.removeItem('ptsd.ohmage.token')
-  window.location.reload()
+  var url = ptsd.ohmage.url + '/user/logout'
+  var params = {
+    auth_token:ptsd.ohmage.token(),
+    client:ptsd.ohmage.client
+  }
+  $.ajax({
+    url: url,
+    data:params,
+    type:'POST',
+    success: function(res) {
+      localStorage.removeItem('ptsd.ohmage.token')
+      localStorage.removeItem('ptsd.ohmage.username')
+      window.location.reload()
+    }
+  });
 }
 
 ptsd.ohmage.userInfo = function(callback) {

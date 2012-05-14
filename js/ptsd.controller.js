@@ -22,6 +22,10 @@ ptsd.controller = function(){
     
     $('#logoutButton').click(ptsd.ohmage.logout)
     
+    $('.clearAll').click(function(){
+      $('.plot, #info_panel .info').remove()
+    })
+    
     $('.close').click(function(){
       $(this).parent().hide()
     })
