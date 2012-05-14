@@ -1,3 +1,12 @@
+2 / 21 requests  ❘  418B / 4.25KB transferred  ❘  237ms (onload: 237ms, DOMContentLoaded: 217ms)
+app.css
+/css
+32ms1ms
+graph.css
+/css
+30ms0ms
+
+HeadersPreviewResponseTiming
 body{
   font-size: 10pt;
   font-family:sans-serif;
@@ -239,4 +248,10 @@ body{
 #msg{
   font-size: 11px;
   color:red;
+}
+
+.clearAll{
+  cursor: pointer;
+  margin-top: -20px;
+  margin-bottom: 5px;
 }
