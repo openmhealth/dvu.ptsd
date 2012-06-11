@@ -1,140 +1,141 @@
+
 <!--
 To change this template, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>ClinVis: PTSD Explorer</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="css/app.css" media="all" type="text/css" rel="stylesheet"/>
-    <link href="css/graph.css" media="all" type="text/css" rel="stylesheet"/>
-    <!-- Third Party Scripts -->
-    <script type="text/javascript" src="js/lib/jquery.1.7.1.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/lib/d3/d3.js"></script>
-    <script type="text/javascript" src="js/lib/d3/d3.time.js"></script>
-    <script type="text/javascript" src="js/lib/color.converter.js"></script>
-    <script type="text/javascript" src="js/lib/date.js"></script>
-    <!-- OMH Scripts -->
-    <script type="text/javascript" src="js/omh.js"></script>
-    <script type="text/javascript" src="js/omh.dvu.js"></script>
-    <script type="text/javascript" src="js/omh.dvu.timeline.js"></script>
-    <script type="text/javascript" src="js/ptsd.js"></script>
-    <script type="text/javascript" src="js/ptsd.ohmage.js"></script>
-    <script type="text/javascript" src="js/ptsd.data.js"></script>
-    <script type="text/javascript" src="js/ptsd.ui.js"></script>
-    <script type="text/javascript" src="js/ptsd.plot.main.js"></script>
-    <script type="text/javascript" src="js/ptsd.plot.binary.js"></script>
-    <script type="text/javascript" src="js/ptsd.controller.js"></script>
+    <head>
+        <title>ClinVis: PTSD Explorer</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="css/app.css" media="all" type="text/css" rel="stylesheet"/>
+        <link href="css/graph.css" media="all" type="text/css" rel="stylesheet"/>
+        <!-- Third Party Scripts -->
+        <script type="text/javascript" src="js/lib/jquery.1.7.1.min.js"></script>
+        <script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/lib/d3/d3.js"></script>
+        <script type="text/javascript" src="js/lib/d3/d3.time.js"></script>
+        <script type="text/javascript" src="js/lib/color.converter.js"></script>
+        <script type="text/javascript" src="js/lib/date.js"></script>
+        <!-- OMH Scripts -->
+        <script type="text/javascript" src="js/omh.js"></script>
+        <script type="text/javascript" src="js/omh.dvu.js"></script>
+        <script type="text/javascript" src="js/omh.dvu.timeline.js"></script>
+        <script type="text/javascript" src="js/ptsd.js"></script>
+        <script type="text/javascript" src="js/ptsd.ohmage.js"></script>
+        <script type="text/javascript" src="js/ptsd.data.js"></script>
+        <script type="text/javascript" src="js/ptsd.ui.js"></script>
+        <script type="text/javascript" src="js/ptsd.plot.main.js"></script>
+        <script type="text/javascript" src="js/ptsd.plot.binary.js"></script>
+        <script type="text/javascript" src="js/ptsd.controller.js"></script>
 
-  </head>
-  <body style="width: 1020px; padding: 0px;">
-    <div class="ctrl_panel">
-      <span id="logoutButton">Sign Out</span>
-      <h1>
-        ClinVis: PTSD Explorer<span id='msg'></span>
-      </h1>
-      <div class="form">
-        <label>Campaign: </label>
-        <select id="campaignMenu"></select>
-        <label>Patient: </label>
-        <select id="patientMenu"></select>
+    </head>
+    <body style="width: 1020px; padding: 0px;">
+        <div class="ctrl_panel">
+            <span id="logoutButton">Sign Out</span>
+            <h1>
+                ClinVis: PTSD Explorer<span id='msg'></span>
+            </h1>
+            <div class="form">
+                <label>Campaign: </label>
+                <select id="campaignMenu"></select>
+                <label>Patient: </label>
+                <select id="patientMenu"></select>
+                <br/>
+                <label style="padding-left: 0px;">Survey Type: </label>
+                <select id="surveyMenu"></select><select id="plotMenu"></select>
+                <input id="plot" type="submit" value="Plot">
+                <img class="waiting" style="display: none" src="images/waiting.gif"/>
+            </div>
+        </div>
+        <div id="wrapper">
+            <div id="mainPlot"></div>
+            <div id="info_panel_wrapper">
+                <div class="clearAll">Clear All</div>
+                <div id="info_panel"></div>
+            </div>
+            <div id="binaryPlot"></div>
+            <div id="binary_info_panel_wrapper">
+                <div id="binary_info_panel"></div>
+            </div>
+        </div>
+
+    <center class="times">
+        Dates: 
+        <input type="text" id="startDate" name="startDate" value="3/1/2012" /> 
+        to:
+        <input type="text" id="endDate" name="endDate" value="5/31/2012" />   
+    </center>
+
+    <form id="loginDialog" style="display: none">
+        <p class="msg">Please sign in to access data.</p>
+        <label>Username:</label>
+        <input id="username"/>
+        <label>Password:</label>
+        <input type="password" id="password"/>
+        <input id="loginButton" type="submit"/>
+    </form>
+
+    <div id="pointOverlay" style="display: none">
+        <div class="patient"><label>Patient: </label><span></span></div>
+        <div class="timestamp"><label>Date/Time: </label><span></span></div>
+        <div class="survey"><label>Survey: </label><span></span></div>
+        <div class="question"><label>Question: </label><span></span></div>
+        <div class="response"><label>Response: </label><span></span></div>
+        <div class="annotation"><label>Annotation: </label><span></span></div>
+    </div>
+
+    <div id="popup" style="display: none" class="popup">
+        <div class="patient"><label>Patient: </label><span></span></div>
+        <div class="timestamp"><label>Date/Time: </label><span></span></div>
+        <div class="survey"><label>Survey: </label><span></span></div>
+        <div class="question"><label>Question: </label><span></span></div>
+        <div class="response"><label>Response: </label><span></span></div>
+        <!--
+        <button id="histoButton">Histogram</button>
+        -->
         <br/>
-        <label style="padding-left: 0px;">Survey Type: </label>
-        <select id="surveyMenu"></select><select id="plotMenu"></select>
-        <input id="plot" type="submit" value="Plot">
-        <img class="waiting" style="display: none" src="images/waiting.gif"/>
-      </div>
-    </div>
-    <div id="wrapper">
-      <div id="mainPlot"></div>
-      <div id="info_panel_wrapper">
-        <div class="clearAll">Clear All</div>
-        <div id="info_panel"></div>
-      </div>
-      <div id="binaryPlot"></div>
-      <div id="binary_info_panel_wrapper">
-        <div id="binary_info_panel"></div>
-      </div>
+        <div class="annotations">
+            <label class="noteLabel">Annotations:</label>
+            <textarea></textarea>
+            <div>
+                <button id="annotationButton">Save Annotation</button>
+                <span id="annotationMsg" style="display: none">Annotation Saved</span>
+            </div>
+        </div>
+        <span class="close">X</span>
     </div>
 
-  <center class="times">
-    Dates: 
-    <input type="text" id="startDate" name="startDate" value="3/1/2012" /> 
-    to:
-    <input type="text" id="endDate" name="endDate" value="5/31/2012" />   
-  </center>
-
-  <form id="loginDialog" style="display: none">
-    <p class="msg">Please sign in to access data.</p>
-    <label>Username:</label>
-    <input id="username"/>
-    <label>Password:</label>
-    <input type="password" id="password"/>
-    <input id="loginButton" type="submit"/>
-  </form>
-
-  <div id="pointOverlay" style="display: none">
-    <div class="patient"><label>Patient: </label><span></span></div>
-    <div class="timestamp"><label>Date/Time: </label><span></span></div>
-    <div class="survey"><label>Survey: </label><span></span></div>
-    <div class="question"><label>Question: </label><span></span></div>
-    <div class="response"><label>Response: </label><span></span></div>
-    <div class="annotation"><label>Annotation: </label><span></span></div>
-  </div>
-
-  <div id="popup" style="display: none" class="popup">
-    <div class="patient"><label>Patient: </label><span></span></div>
-    <div class="timestamp"><label>Date/Time: </label><span></span></div>
-    <div class="survey"><label>Survey: </label><span></span></div>
-    <div class="question"><label>Question: </label><span></span></div>
-    <div class="response"><label>Response: </label><span></span></div>
-    <!--
-    <button id="histoButton">Histogram</button>
-    -->
-    <br/>
-    <div class="annotations">
-      <label class="noteLabel">Annotations:</label>
-      <textarea></textarea>
-      <div>
-        <button id="annotationButton">Save Annotation</button>
-        <span id="annotationMsg" style="display: none">Annotation Saved</span>
-      </div>
+    <div id="annotationPopup" class="popup" style="display: none">
+        <div class="patient"><label>Patient: </label><span></span></div>
+        <div class="timestamp"><label>Date/Time: </label><span></span></div>
+        <br/>
+        <div class="annotations">
+            <label class="noteLabel">Annotations:</label>
+            <textarea></textarea>
+            <!--
+            <div>
+              <button id="annotationButton">Save Annotation</button>
+              <span id="annotationMsg" style="display: none">Annotation Saved</span>
+            </div>
+            -->
+        </div>
+        <span class="close">X</span>
     </div>
-    <span class="close">X</span>
-  </div>
 
-  <div id="annotationPopup" class="popup" style="display: none">
-    <div class="patient"><label>Patient: </label><span></span></div>
-    <div class="timestamp"><label>Date/Time: </label><span></span></div>
-    <br/>
-    <div class="annotations">
-      <label class="noteLabel">Annotations:</label>
-      <textarea></textarea>
-      <!--
-      <div>
-        <button id="annotationButton">Save Annotation</button>
-        <span id="annotationMsg" style="display: none">Annotation Saved</span>
-      </div>
-      -->
+    <div id="histogram"  style="display: none">
+        <label>Histogram</label>
+        <span class="close">X</span>
     </div>
-    <span class="close">X</span>
-  </div>
 
-  <div id="histogram"  style="display: none">
-    <label>Histogram</label>
-    <span class="close">X</span>
-  </div>
-
-  <div style="display:none">
-    <div id="infoProto" class="info">
-      <div class="patient"><span></span></div>
-      <div class="survey"><span></span></div>
-      <div class="question"><span></span></div>
-      <span class="close">X</span>
+    <div style="display:none">
+        <div id="infoProto" class="info">
+            <div class="patient"><span></span></div>
+            <div class="survey"><span></span></div>
+            <div class="question"><span></span></div>
+            <span class="close">X</span>
+        </div>
     </div>
-  </div>
 
 </body>
 </html>
